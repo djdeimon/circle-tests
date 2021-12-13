@@ -7,17 +7,24 @@ executors:
     resource_class: medium
 
 jobs:
+  build:
+    executor: my
+    steps:
+      - checkout
+      - run: yarn --save
   test:
     parallelism: 2
     executor: my
     steps:
-      - run: yarn --save
+      - checkout
       - run: yarn test
 
 workflows:
   test:
     jobs:
-      - test
-
+      - build
+      - test:
+          requires:
+            - build
 
 
