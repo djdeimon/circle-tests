@@ -12,19 +12,13 @@ jobs:
     steps:
       - checkout
       - run: yarn --save
-  test:
-    parallelism: 2
-    executor: my
-    steps:
-      - checkout
       - run: yarn test
+    parallelism: 2
 
 workflows:
   test:
     jobs:
       - build
-      - test:
-          requires:
-            - build
+
 
 
