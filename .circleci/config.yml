@@ -16,6 +16,5 @@ jobs:
 workflows:
   test_my_app:
     jobs:
-      - test
-      - node/test:
-            test-results-path: junit.xml
+      - test:
+        test-results-path: junit.xml
