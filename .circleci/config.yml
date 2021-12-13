@@ -1,18 +1,8 @@
 version: '2.1'
 orbs:
   node: circleci/node@4.7
-jobs:
+workflows:
   test:
-    executor:
-      name: node/default
-      tag: '16.13'
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: yarn
+    jobs:
       - node/test:
           test-results-for: jest
-workflows:
-  test_my_app:
-    jobs:
-      - test
