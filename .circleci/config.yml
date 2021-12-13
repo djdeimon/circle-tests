@@ -10,9 +10,8 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: yarn
-      - run:
-          command: yarn run test
-          name: Run YARN tests
+      - node/test:
+          test-results-for: jest
 workflows:
   test_my_app:
     jobs:
