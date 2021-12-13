@@ -1,16 +1,20 @@
 version: '2.1'
-jobs:
-  build:
-    working_directory: /mnt/ramdisk
+executors:
+  my:
     docker:
       - image: cimg/node:17.2.0
+    working_directory: /mnt/ramdisk
+    resource_class: medium
+
+jobs:
+  build:
+    executor: my
     steps:
       - checkout
       - run: yarn --save
   test:
-    working_directory: /mnt/ramdisk
-    docker:
-      - image: cimg/node:17.2.0
+    parallelism: 2
+    executor: my
     steps:
       - run: yarn test
 
