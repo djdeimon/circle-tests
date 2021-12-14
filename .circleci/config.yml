@@ -1,24 +1,54 @@
 version: '2.1'
+orbs:
+  docker: circleci/docker@1.0.1
 executors:
   my:
     docker:
       - image: cimg/node:17.2.0
-    working_directory: /mnt/ramdisk
     resource_class: medium
 
 jobs:
-  build:
+  prepare_dependencies:
     executor: my
     steps:
       - checkout
-      - run: yarn --save
-      - run: yarn test
-    parallelism: 2
+      - restore_cache:
+            keys:
+              - yarn-deps-{{ checksum "yarn.lock" }}
+              - yarn-deps
+      - run:
+          name: yarn install
+          command: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: yarn-deps-{{ checksum "yarn.lock" }}-{{ epoch }}
+      - store_artifacts:
+          path: yarn.lock
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  test:
+    executor: my
+    - attach_workspace:
+        at: .
+    - run:
+        name: Run tests
+        command: |
+          circleci tests glob '**/*.test.ts | circleci tests split --split-by timings | xargs yarn test
+    - store_artifacts:
+        path: test-results
+    - store_test_results:
+        path: test-results
 
 workflows:
-  test:
+  build:
     jobs:
-      - build
+      - prepare_dependencies
+      - test:
+          requires:
+            - prepare_dependencies
 
 
 
