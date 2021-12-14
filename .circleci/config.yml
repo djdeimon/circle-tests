@@ -31,13 +31,14 @@ jobs:
             - .
   test:
     executor: my
+    parallelism: 4
     steps:
       - attach_workspace:
           at: .
       - run:
           name: Run tests
           command: |
-            circleci tests glob '**/*.test.ts' | circleci tests split --split-by timings | xargs yarn test
+            circleci tests glob '*/**/**/*.test.ts?' | circleci tests split --split-by filename/classname | xargs yarn test
       - store_artifacts:
           path: test-results
       - store_test_results:
