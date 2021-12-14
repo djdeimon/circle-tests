@@ -1,4 +1,4 @@
-version: '2.1'
+version: 2.1
 orbs:
   docker: circleci/docker@1.0.1
 executors:
@@ -13,9 +13,9 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-            keys:
-              - yarn-deps-{{ checksum "yarn.lock" }}
-              - yarn-deps
+          keys:
+            - yarn-deps-{{ checksum "yarn.lock" }}
+            - yarn-deps
       - run:
           name: yarn install
           command: yarn install
@@ -31,16 +31,17 @@ jobs:
             - .
   test:
     executor: my
-    - attach_workspace:
-        at: .
-    - run:
-        name: Run tests
-        command: |
-          circleci tests glob '**/*.test.ts | circleci tests split --split-by timings | xargs yarn test
-    - store_artifacts:
-        path: test-results
-    - store_test_results:
-        path: test-results
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run tests
+          command: |
+            circleci tests glob '**/*.test.ts | circleci tests split --split-by timings | xargs yarn test
+      - store_artifacts:
+          path: test-results
+      - store_test_results:
+          path: test-results
 
 workflows:
   build:
