@@ -32,6 +32,7 @@ jobs:
   test:
     executor: my
     parallelism: 4
+    working_directory: ~/project
     steps:
       - attach_workspace:
           at: .
@@ -39,8 +40,6 @@ jobs:
           name: Run tests
           command: |
             circleci tests glob '*/**/**/*.test.ts?' | circleci tests split --split-by name | xargs yarn test
-      - store_artifacts:
-          path: test-results
       - store_test_results:
           path: test-results
 
